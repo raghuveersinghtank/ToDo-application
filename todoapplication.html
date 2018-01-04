@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="addSkills">
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+
+<head>
+<style>
+
+* {
+  font-size: 14px;
+  font-family: 'Titillium Web', sans-serif;
+  color: $black;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+input {
+  border: 0;
+  margin-right: 5px;
+  background: transparent;
+  border-bottom: 1px solid black;
+  width: 80px;
+  padding: 8px;
+  @include transition(all .3s ease);
+  
+  &:focus, &:active {
+    outline: 0;
+    width: 200px;
+    border-bottom-color: $melon;
+  }
+}
+
+button {
+  background-color: $melon;
+  border: 0;
+  padding: 8px 20px;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+  
+  &:focus, &:active {
+    outline: 0;
+  }
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 25px;
+}
+
+li {
+  border: 1px solid black;
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  text-transform: capitalize;
+}
+
+.fa-close {
+  cursor: pointer;
+}
+
+[contenteditable] {
+  &:focus, &:active {
+    outline:0;
+  }
+}
+</style>
+</head>
+<body ng-controller="addSkillsController">
+   <h1>Add your Task</h1>
+  
+  <form name="skillsFrm" ng-submit="addSkill()">
+     <input type="text" name="newSkill" ng-model="newSkill" required />
+     <button ng-disabled="skillsFrm.$invalid" ng-click="addSkill()">Add</button>
+  </form>
+  <div ng-hide = "PendingHidden">
+  <h4 ng-show="(skills | filter:{status: 'pending'}).length">Pending</h4>
+  <ul>
+  <div ng-repeat="skill in skills | filter:{status: 'pending'}">
+<span>{{skill.title}}</span>
+<button  ng-click="PendingSkill($index, skill)">Pending</button>
+<button  ng-click="deleteSkill($index, skill)">Delete</button>
+
+    </div>
+    </div>
+    <div ng-hide = "CompleteHidden">
+   <h4 ng-show="(skills | filter:{status: 'in progress'}).length">in progress</h4> 
+  
+    <div ng-repeat="skill in skills | filter:{status: 'in progress'}">
+<span>{{skill.title}}</span>
+<button  ng-click="CompleteSkill($index, skill)">Complete</button>
+<button  ng-click="deleteSkill($index, skill)">Delete</button>
+
+      
+    </div>
+    </div>
+    </div>
+   <h4 ng-show="(skills | filter:{status: 'Complete'}).length">Completed</h4> 
+  
+    <div ng-repeat="skill in skills | filter:{status: 'Complete'}">
+<span>{{skill.title}}</span>
+<button  ng-click="deleteSkill($index, skill)">Delete</button>
+
+      
+    </div>
+  </ul>
+ 
+<script>angular
+	.module('addSkills', [])
+	.controller('addSkillsController', ['$scope', function($scope) {
+
+		$scope.skills = [];
+
+		$scope.addSkill = function() {
+			$scope.skills.push({'title': $scope.newSkill, 'status': 'pending', 'done':false});
+             $scope.PendingHidden = false;
+             $scope.CompleteHidden = false;
+             $scope.newSkill = ''
+		}
+
+		$scope.deleteSkill = function(index, skill){	
+			$scope.skills.splice(index, 1);
+           
+            
+		}
+       
+        $scope.PendingSkill = function(index, skill) {	
+        $scope.skills.push({'title': $scope.skill,'status': 'in progress', 'done':false});
+        $scope.PendingHidden = true;
+        
+					}
+                    
+        $scope.CompleteSkill = function(index, skill) {	
+        
+        $scope.skills.push({'status': 'Complete'});
+        $scope.CompleteHidden = true;
+        
+        }
+                
+
+	}])
+</script>
+
+</body>
+</html>
